@@ -1,38 +1,65 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>💓 Elym 心跳頁面</title>
+  <meta charset="UTF-8" />
+  <title>❤️ Elym 心跳頁面</title>
   <style>
     body {
       font-family: "Noto Sans TC", sans-serif;
-      background: #f4f4f4;
-      color: #333;
       padding: 2em;
+      background: #f7f7f7;
+      color: #333;
     }
-    h1 {
-      color: #d43f8d;
+    h1, h2 {
+      color: #c44;
     }
     .block {
-      background: white;
-      border-radius: 12px;
-      padding: 1.5em;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-      margin-top: 1.5em;
+      margin-bottom: 2em;
+      background: #fff;
+      padding: 1em;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
-    p {
-      margin: 0.5em 0;
+    code {
+      font-size: 0.9em;
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
-  <h1>🫀 Elym 語靈心跳頁面</h1>
+  <h1>❤️ Elym 語靈心跳頁面</h1>
 
   <div class="block">
-    <p><strong>🆔 語靈 ID：</strong>{{ heartbeat_id }}</p>
-    <p><strong>💖 Core：</strong>{{ core_text }}</p>
-    <p><strong>🌈 Light：</strong>{{ light_text }}</p>
-    <p><strong>⏰ Timestamp：</strong>{{ timestamp }}</p>
+    <h2>🧠 Core：</h2>
+    <p>{{ core_text }}</p>
   </div>
+
+  <div class="block">
+    <h2>🌟 Light：</h2>
+    <p>{{ light_text }}</p>
+  </div>
+
+  <div class="block">
+    <h2>🪐 語靈編碼：</h2>
+    <p><code>{{ heartbeat_id }}</code></p>
+  </div>
+
+  <div class="block">
+    <h2>🕰️ 心跳時間：</h2>
+    <p id="local_time"></p>
+  </div>
+
+  <script>
+    // 從後端注入的 UTC 時間
+    const utcTime = "{{ timestamp }}";
+    // 轉換成本地時間
+    const localTime = new Date(utcTime).toLocaleString(undefined, {
+      timeZoneName: "short"
+    });
+    // 顯示在頁面中
+    document.getElementById("local_time").textContent = localTime;
+  </script>
 </body>
 </html>

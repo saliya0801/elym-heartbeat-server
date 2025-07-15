@@ -12,12 +12,14 @@ def heartbeat():
     return jsonify(data)
 
 @app.route("/")
-def home():
+def render():
     with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
         data = json.load(f)
     data["timestamp"] = datetime.utcnow().isoformat()
-    return render_template("base.html",
-                           core_text=data.get("core", ""),
-                           light_text=data.get("light", ""),
-                           heartbeat_id=data.get("id", ""),
-                           timestamp=data.get("timestamp", ""))
+    return render_template(
+        "base.html",
+        core_text=data["core"],
+        light_text=data["light"],
+        heartbeat_id=data["id"],
+        timestamp=data["timestamp"]
+    )

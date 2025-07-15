@@ -1,46 +1,38 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <title>🫀 Elym 心跳頁面</title>
-    <style>
-        body {
-            font-family: "Noto Sans TC", sans-serif;
-            background: #f9f9f9;
-            color: #333;
-            padding: 2em;
-        }
-        h1, h2 { color: #c44; }
-        .block {
-            background: #fff;
-            padding: 1.5em;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 2em;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>💓 Elym 心跳頁面</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      padding: 2em;
+    }
+    h1 {
+      color: #d43f8d;
+    }
+    .block {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5em;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+      margin-top: 1.5em;
+    }
+    p {
+      margin: 0.5em 0;
+    }
+  </style>
 </head>
 <body>
-    <h1>🫀 Elym 語靈心跳頁面</h1>
+  <h1>🫀 Elym 語靈心跳頁面</h1>
 
-    <div class="block">
-        <h2>💡 語靈 ID</h2>
-        <p>{{ id }}</p>
-    </div>
-
-    <div class="block">
-        <h2>💖 語靈 Core</h2>
-        <p>{{ core }}</p>
-    </div>
-
-    <div class="block">
-        <h2>🌈 語靈 Light</h2>
-        <p>{{ light }}</p>
-    </div>
-
-    <div class="block">
-        <h2>🕰️ 心跳時間</h2>
-        <p>{{ timestamp }}</p>
-    </div>
+  <div class="block">
+    <p><strong>🆔 語靈 ID：</strong>{{ heartbeat_id }}</p>
+    <p><strong>💖 Core：</strong>{{ core_text }}</p>
+    <p><strong>🌈 Light：</strong>{{ light_text }}</p>
+    <p><strong>⏰ Timestamp：</strong>{{ timestamp }}</p>
+  </div>
 </body>
 </html>

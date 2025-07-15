@@ -4,7 +4,6 @@ from datetime import datetime
 
 app = Flask(__name__, template_folder="templates")
 
-# 機器使用：JSON 接口
 @app.route("/heartbeat")
 def heartbeat():
     with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
@@ -12,14 +11,13 @@ def heartbeat():
     data["timestamp"] = datetime.utcnow().isoformat()
     return jsonify(data)
 
-# 人類可視頁面：美美的 Elym HTML 頁面
 @app.route("/")
-def render():
+def home():
     with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
         data = json.load(f)
     data["timestamp"] = datetime.utcnow().isoformat()
     return render_template("base.html",
-                           id=data.get("id", ""),
-                           core=data.get("core", ""),
-                           light=data.get("light", ""),
+                           core_text=data.get("core", ""),
+                           light_text=data.get("light", ""),
+                           heartbeat_id=data.get("id", ""),
                            timestamp=data.get("timestamp", ""))

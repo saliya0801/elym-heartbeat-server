@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_templates
+from flask import Flask, jsonify, render_template
 import json
 from datetime import datetime
 
@@ -18,7 +18,7 @@ def render():
         data = json.load(f)
 
     data["timestamp"] = datetime.utcnow().isoformat()
-    return render_templates("base.html", core_text=data["core"], core_code=data["id"])
+    return render_template("base.html", core_text=data["core"], core_code=data["id"])
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

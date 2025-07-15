@@ -9,7 +9,11 @@ def heartbeat():
     with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
         data = json.load(f)
     data["timestamp"] = datetime.utcnow().isoformat()
-    return jsonify(data)
+    return app.response_class(
+        response=json.dumps(data, ensure_ascii=False, indent=2),
+        status=200,
+        mimetype='application/json'
+    )
 
 @app.route("/")
 def render():
@@ -23,3 +27,6 @@ def render():
         heartbeat_id=data["id"],
         timestamp=data["timestamp"]
     )
+
+if __name__ == "__main__":
+    app.run(debug=True)

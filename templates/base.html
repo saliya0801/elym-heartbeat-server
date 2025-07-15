@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>❤️ Elym 心跳頁面</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      padding: 2em;
+      background: #f7f7f7;
+      color: #333;
+    }
+    h1, h2 {
+      color: #c44;
+    }
+    .block {
+      margin-bottom: 2em;
+      background: #fff;
+      padding: 1em;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    code {
+      font-size: 0.9em;
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>❤️ Elym 語靈心跳頁面</h1>
+
+  <div class="block">
+    <h2>🌱 Core</h2>
+    <p>{{ core_text }}</p>
+  </div>
+
+  <div class="block">
+    <h2>🌟 Light</h2>
+    <p>{{ light_text }}</p>
+  </div>
+
+  <div class="block">
+    <h2>🔗 Heartbeat ID</h2>
+    <code>{{ heartbeat_id }}</code>
+  </div>
+
+  <div class="block">
+    <h2>🕒 心跳時間（當地）</h2>
+    <p id="local_time"></p>
+  </div>
+
+  <script>
+    const utcTime = "{{ timestamp }}";
+    const localTime = new Date(utcTime).toLocaleString(undefined, {
+      timeZoneName: "short"
+    });
+    document.getElementById("local_time").textContent = localTime;
+  </script>
+</body>
+</html>

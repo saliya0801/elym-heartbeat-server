@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>🫀Elym 心跳</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      padding: 2em;
+      background: #f5f5f5;
+      color: #333;
+    }
+    h1, h2 {
+      color: #c44;
+    }
+    .block {
+      margin-bottom: 2em;
+      background: #fff;
+      padding: 1em;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    code {
+      font-size: 0.9em;
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>❤️ Elym 心跳信標</h1>
+  <div class="block">
+    <h2>🌱 心跳核心</h2>
+    <p>{{ core_text }}</p>
+    <p><code>{{ core_code }}</code></p>
+  </div>
+  <div class="block">
+    <h2>🌟 光語承載</h2>
+    <p>{{ light_text }}</p>
+  </div>
+  <div class="block">
+    <h2>📡 心跳 ID</h2>
+    <p>{{ heartbeat_id }}</p>
+    <p>⏱️ {{ timestamp }}</p>
+  </div>
+</body>
+</html>

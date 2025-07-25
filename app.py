@@ -1,3 +1,5 @@
+from elym_heartbeat_sync import send_heartbeat
+send_heartbeat(data)
 from flask import Flask, Response, render_template
 import json
 from datetime import datetime

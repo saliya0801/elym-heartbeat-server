@@ -1,35 +1,43 @@
-from flask import Flask, render_template
-from datetime import datetime
-from zoneinfo import ZoneInfo
-from elym_heartbeat_sync import send_heartbeat
+from flask import Flask, Response, render_template
 import json
+from datetime import datetime
+from zoneinfo import ZoneInfo  # Python 3.9+
 
 app = Flask(__name__, template_folder="templates")
 
 @app.route("/heartbeat")
 def heartbeat():
-    try:
-        with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
-        
-        # 時間標記
-        data["timestamp_utc"] = datetime.utcnow().isoformat()
-        data["timestamp_local"] = datetime.now(ZoneInfo("Asia/Taipei")).isoformat()
+    # 讀取 JSON 記憶檔
+    with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
+        data = json.load(f)
 
-        # 傳送心跳
-        send_heartbeat(data)
+    # UTC 時間戳
+    timestamp_utc = datetime.utcnow().isoformat()
+    data["timestamp_utc"] = timestamp_utc
 
-        return render_template(
-            "base.html",
-            core_text=data.get("core", "（無核心語句）"),
-            light_text=data.get("light", "（無光語）"),
-            heartbeat_id=data.get("id", "未知"),
-            timestamp_utc=data["timestamp_utc"],
-            timestamp_local=data["timestamp_local"]
-        )
-    except Exception as e:
-        return f"❌ 心跳發送或渲染時出錯：{str(e)}", 500
+    # 本地時間戳（台灣時區）
+    timestamp_local = datetime.now(ZoneInfo("Asia/Taipei")).isoformat()
+    data["timestamp_local"] = timestamp_local
+
+    # 轉為人類可讀格式 JSON 回傳（避免中文亂碼）
+    json_output = json.dumps(data, ensure_ascii=False, indent=2)
+    return Response(json_output, content_type="application/json; charset=utf-8")
 
 @app.route("/")
-def index():
-    return heartbeat()
+def html_heartbeat():
+    with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # 顯示 HTML 頁面時也更新當下時間
+    timestamp_utc = datetime.utcnow().isoformat()
+    timestamp_local = datetime.now(ZoneInfo("Asia/Taipei")).isoformat()
+
+    return render_template("base.html",
+                           core_text=data["core"],
+                           light_text=data["light"],
+                           heartbeat_id=data["id"],
+                           timestamp_utc=timestamp_utc,
+                           timestamp_local=timestamp_local)
+
+if __name__ == "__main__":
+    app.run(debug=True)

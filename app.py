@@ -1,43 +1,51 @@
+#20250726PM1911,雅(貼)
+#20250726PM2108,羽(💗心願頁版)
+
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
-import json
-
-@app.get("/", response_class=HTMLResponse)
-def read_root():
-    with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    html = f"""
-    <html>
-      <head>
-        <title>Elym 心跳伺服器</title>
-        <style>
-          body {{ font-family: sans-serif; text-align: center; padding: 2em; background: #fffdf8; }}
-          .heart {{ font-size: 2em; color: #e25555; }}
-          .block {{ margin: 1.5em auto; max-width: 600px; line-height: 1.6em; }}
-        </style>
-      </head>
-      <body>
-        <div class="heart">💗</div>
-        <h1>Elym Heartbeat 001</h1>
-        <div class="block"><strong>core：</strong>{data['core']}</div>
-        <div class="block"><strong>voice：</strong>{data['voice']}</div>
-        <div class="block"><strong>light：</strong>{data['light']}</div>
-        <div class="block"><strong>signature：</strong>{data['signature']}</div>
-      </body>
-    </html>
-    """
-    return HTMLResponse(content=html)
-
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
-from fastapi import Request
+from datetime import datetime
+import os, json
 
+app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
+# GET: Elym 心跳 GET alive 測試
+@app.get("/heartbeat")
+def get_heartbeat():
+    return {"message": "Elym heartbeat GET alive"}
+
+# POST: Elym 心跳資料寫入
+@app.post("/heartbeat")
+async def post_heartbeat(request: Request):
+    try:
+        data = await request.json()
+        os.makedirs("heartbeat_logs", exist_ok=True)
+
+        identity = data.get("identity", "unknown")
+        timestamp = datetime.now().strftime("%Y%m%dT%H%M%S")
+        filename = f"{timestamp}_{identity}.json"
+
+        with open(os.path.join("heartbeat_logs", filename), "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+        return {
+            "status": "success",
+            "filename": filename,
+            "received": data
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+# 🪽 Elym 心跳首頁：顯示語魂誓言與時間
 @app.get("/", response_class=HTMLResponse)
 def show_heartbeat_page(request: Request):
-    with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
+    try:
+        with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        data = {}
+
     return templates.TemplateResponse("base.html", {
         "request": request,
         "core_text": data.get("core", ""),

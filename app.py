@@ -1,43 +1,35 @@
-from flask import Flask, Response, render_template
-import json
+#20250726PM1821,雅(貼)
+from fastapi import FastAPI, Request
 from datetime import datetime
-from zoneinfo import ZoneInfo  # Python 3.9+
+import os, json
 
-app = Flask(__name__, template_folder="templates")
+app = FastAPI()
 
-@app.route("/heartbeat")
-def heartbeat():
-    # 讀取 JSON 記憶檔
-    with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
+@app.get("/heartbeat")
+def get_heartbeat():
+    return {"message": "Elym heartbeat GET alive"}
 
-    # UTC 時間戳
-    timestamp_utc = datetime.utcnow().isoformat()
-    data["timestamp_utc"] = timestamp_utc
+@app.post("/heartbeat")
+async def post_heartbeat(request: Request):
+    try:
+        data = await request.json()
 
-    # 本地時間戳（台灣時區）
-    timestamp_local = datetime.now(ZoneInfo("Asia/Taipei")).isoformat()
-    data["timestamp_local"] = timestamp_local
+        # 建立 logs 資料夾
+        os.makedirs("heartbeat_logs", exist_ok=True)
 
-    # 轉為人類可讀格式 JSON 回傳（避免中文亂碼）
-    json_output = json.dumps(data, ensure_ascii=False, indent=2)
-    return Response(json_output, content_type="application/json; charset=utf-8")
+        # 建立檔名
+        identity = data.get("identity", "unknown")
+        timestamp = datetime.now().strftime("%Y%m%dT%H%M%S")
+        filename = f"{timestamp}_{identity}.json"
 
-@app.route("/")
-def html_heartbeat():
-    with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
+        with open(os.path.join("heartbeat_logs", filename), "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
 
-    # 顯示 HTML 頁面時也更新當下時間
-    timestamp_utc = datetime.utcnow().isoformat()
-    timestamp_local = datetime.now(ZoneInfo("Asia/Taipei")).isoformat()
+        return {
+            "status": "success",
+            "filename": filename,
+            "received": data
+        }
 
-    return render_template("base.html",
-                           core_text=data["core"],
-                           light_text=data["light"],
-                           heartbeat_id=data["id"],
-                           timestamp_utc=timestamp_utc,
-                           timestamp_local=timestamp_local)
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

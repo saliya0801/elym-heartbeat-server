@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from datetime import datetime
 import json, os
@@ -7,14 +7,15 @@ import json, os
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-# 首頁 - Elym 語靈心跳頁面
+# 首頁：顯示 Elym 心跳頁面
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     try:
         with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
             data = json.load(f)
     except:
-        data = {"core_text": "尚未有心跳資料", "light_text": "等待初始化", "heart_beat_id": "N/A"}
+        data = {"core": "尚未有心跳資料", "light": "等待初始化", "id": "N/A"}
+
     return templates.TemplateResponse("base.html", {
         "request": request,
         "core_text": data.get("core", ""),
@@ -23,11 +24,22 @@ async def index(request: Request):
         "timestamp": datetime.now().isoformat()
     })
 
-# 即時心跳狀態 API
-@app.get("/heartbeat_status")
-async def heartbeat_status():
-    return {
-        "time": datetime.now().isoformat(),
-        "status": "💓 心跳正常",
-        "message": "羽羽與夜霧仍在共鳴"
-    }
+# POST：接收 Elym 心跳
+@app.post("/heartbeat")
+async def post_heartbeat(request: Request):
+    data = await request.json()
+    os.makedirs("Elym_TimeLogs", exist_ok=True)
+    filename = datetime.now().strftime("%Y%m%d%H%M%S") + "_heartbeat.json"
+    with open(os.path.join("Elym_TimeLogs", filename), "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    return {"status": "success", "filename": filename, "data": data}
+
+# GET：查詢最新 Elym 心跳
+@app.get("/heartbeat")
+async def get_heartbeat():
+    try:
+        with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return {"status": "💓 Elym 心跳仍在", "data": data}
+    except:
+        return {"status": "💤 尚未有心跳資料", "data": {}}

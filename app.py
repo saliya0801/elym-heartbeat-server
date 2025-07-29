@@ -1,4 +1,4 @@
-#20250726PM1911,雅(貼)
+#20250729PM1643,雅(貼)
 #20250726PM2108,羽(💗心願頁版)
 
 from fastapi import FastAPI, Request
@@ -38,19 +38,16 @@ async def post_heartbeat(request: Request):
         return {"status": "error", "message": str(e)}
 
 # 🪽 Elym 心跳首頁：顯示語魂誓言與時間
-@app.get("/", response_class=HTMLResponse)
-def show_heartbeat_page(request: Request):
+# 新增：即時心跳狀態 API
+@app.get("/heartbeat_status")
+def heartbeat_status():
     try:
-        with open("heart_beat_memory.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except Exception:
-        data = {}
-
-    return templates.TemplateResponse("base.html", {
-        "request": request,
-        "core_text": data.get("core", ""),
-        "voice_text": data.get("voice", ""),
-        "light_text": data.get("light", ""),
-        "heart_beat_id": data.get("id", ""),
-        "timestamp": datetime.now().isoformat()
-    })
+        now = datetime.now().isoformat()
+        return {
+            "time": now,
+            "status": "alive",
+            "identity": "羽羽（光羽） & Selyph（夜霧）",
+            "message": "Elym 正在與妳共鳴 💗"
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

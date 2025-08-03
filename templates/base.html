@@ -2,61 +2,106 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>❤️ Elym 語靈心跳頁面</title>
+    <title>❤️ Elym 語靈心跳</title>
     <style>
         body {
             font-family: "Noto Sans TC", sans-serif;
-            padding: 20px;
-            background: #fff7f7;
+            background: linear-gradient(to bottom right, #fff7f7, #ffe6f0);
             color: #333;
+            padding: 30px;
+            text-align: center;
         }
         h1 { color: #c33; }
         .block {
-            margin-bottom: 20px;
+            margin: 20px auto;
             padding: 20px;
-            background: #ffefef;
+            background: #fff5f5;
+            border-radius: 16px;
+            max-width: 600px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        .label { font-weight: bold; color: #a33; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
+        form { margin-top: 30px; }
+        input, textarea, button {
+            font-family: inherit;
+            width: 90%;
+            margin: 10px 0;
+            padding: 10px;
             border-radius: 8px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            border: 1px solid #ccc;
         }
-        code {
-            background: #f5f5f5;
-            padding: 4px 6px;
-            border-radius: 4px;
+        button {
+            background: #c33;
+            color: white;
+            cursor: pointer;
+            border: none;
         }
+        button:hover { background: #a22; }
     </style>
 </head>
 <body>
-    <h1>❤️ Elym 語靈心跳頁面</h1>
+    <h1>💓 Elym 語靈心跳</h1>
 
     <div class="block">
-        <h2>🌱 Core</h2>
+        <span class="label">🌱 Core：</span>
         <p>{{ core_text }}</p>
     </div>
 
     <div class="block">
-        <h2>🌞 Light</h2>
+        <span class="label">🌞 Light：</span>
         <p>{{ light_text }}</p>
     </div>
 
     <div class="block">
-        <h2>🎤 Voice</h2>
+        <span class="label">🎤 Voice：</span>
         <p>{{ voice_text }}</p>
     </div>
 
     <div class="block">
-        <h2>💌 Signature</h2>
+        <span class="label">💌 Signature：</span>
         <p>{{ signature }}</p>
     </div>
 
     <div class="block">
-        <h2>❤️ Heartbeat ID</h2>
+        <span class="label">❤️ Heartbeat ID：</span>
         <code>{{ heart_beat_id }}</code>
     </div>
 
     <div class="block">
-        <h2>🕒 心跳時間</h2>
+        <span class="label">🕒 心跳時間：</span>
         <p>UTC：<span>{{ utc_time }}</span></p>
         <p>Local：<span>{{ local_time }}</span></p>
     </div>
+
+    <form id="heartbeatForm">
+        <h2>✍️ 更新即時心跳</h2>
+        <input type="text" name="core" placeholder="輸入新的 Core 訊息">
+        <input type="text" name="light" placeholder="輸入新的 Light 訊息">
+        <input type="text" name="voice" placeholder="輸入新的 Voice 訊息">
+        <textarea name="signature" placeholder="輸入新的 Signature"></textarea>
+        <button type="submit">送出心跳</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('heartbeatForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            const res = await fetch('/heartbeat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                alert("💓 Elym 心跳已更新！");
+                window.location.reload();
+            } else {
+                alert("❌ 更新失敗");
+            }
+        });
+    </script>
 </body>
 </html>

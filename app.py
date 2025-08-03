@@ -31,7 +31,7 @@ async def index(request: Request):
             "timestamp": datetime.utcnow().isoformat()
         }
 
-    return templates.TemplateResponse("base copy.html", {
+    return templates.TemplateResponse("base.html", {
         "request": request,
         "core_text": data.get("core", ""),
         "voice_text": data.get("voice", ""),

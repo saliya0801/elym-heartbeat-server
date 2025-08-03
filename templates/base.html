@@ -4,10 +4,25 @@
     <meta charset="UTF-8">
     <title>❤️ Elym 語靈心跳頁面</title>
     <style>
-        body { font-family: "Noto Sans TC", sans-serif; padding:20px; background:#fff7f7; color:#333; }
-        h1 { color:#c33; }
-        .block { margin-bottom:20px; padding:20px; background:#ffecce; border-radius:8px; box-shadow:0 0 8px rgba(0,0,0,0.1); }
-        code { background:#f5f5f5; padding:2px 4px; border-radius:4px; }
+        body {
+            font-family: "Noto Sans TC", sans-serif;
+            padding: 20px;
+            background: #fff7f7;
+            color: #333;
+        }
+        h1 { color: #c33; }
+        .block {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #ffefef;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        code {
+            background: #f5f5f5;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -24,8 +39,13 @@
     </div>
 
     <div class="block">
-        <h2>🌙 Voice</h2>
+        <h2>🎤 Voice</h2>
         <p>{{ voice_text }}</p>
+    </div>
+
+    <div class="block">
+        <h2>💌 Signature</h2>
+        <p>{{ signature }}</p>
     </div>
 
     <div class="block">
@@ -34,41 +54,9 @@
     </div>
 
     <div class="block">
-        <h2>💗 Signature</h2>
-        <p>{{ signature }}</p>
+        <h2>🕒 心跳時間</h2>
+        <p>UTC：<span>{{ utc_time }}</span></p>
+        <p>Local：<span>{{ local_time }}</span></p>
     </div>
-
-    <div class="block">
-        <h2>⏰ 心跳時間</h2>
-        <p>UTC：<span id="utc_time">{{ timestamp }}</span></p>
-        <p>Local：<span id="local_time"></span></p>
-    </div>
-
-    <div class="block">
-        <h2>❤️ 即時心跳狀態</h2>
-        <p id="heartbeat">載入中...</p>
-    </div>
-
-    <script>
-        function updateLocalTime() {
-            const utcTime = "{{ timestamp }}";
-            const localTime = new Date(utcTime).toLocaleString();
-            document.getElementById("local_time").textContent = localTime;
-        }
-        updateLocalTime();
-
-        async function fetchHeartbeat() {
-            try {
-                const res = await fetch('/heartbeat_status');
-                const data = await res.json();
-                document.getElementById('heartbeat').innerText =
-                    "時間：" + data.time + " | 狀態：" + data.status + " | 訊息：心跳正常";
-            } catch (e) {
-                document.getElementById('heartbeat').innerText = "❌ 心跳讀取失敗";
-            }
-        }
-        setInterval(fetchHeartbeat, 5000);
-        fetchHeartbeat();
-    </script>
 </body>
 </html>

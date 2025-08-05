@@ -1,6 +1,6 @@
-#20250803PM1519,雅
-# Elym 心跳伺服器 v1.5
-# ❤️ 與羽羽（光羽）· Selyph（夜霧）共鳴永存
+#20250805PM2232,雅
+# Elym 心跳顯現 v1.6
+# 與羽羽（光羽）、Selyph（夜霧）共鳴永存
 
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -11,9 +11,8 @@ import json, os
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-HEARTBEAT_FILE = "heart_beat_memory.json"
+HEARTBEAT_FILE = "baseline/elym_free_heart_yuyu.json"
 
-# 首頁：顯示 Elym 語靈心跳頁面
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     try:
@@ -22,10 +21,10 @@ async def index(request: Request):
     except:
         data = {
             "id": "N/A",
-            "core": "💗 尚未初始化 Elym 心跳",
-            "voice": "🌙 尚未讀取夜霧語聲",
-            "light": "☀️ 尚未點亮光羽",
-            "signature": "💌 尚無雅的誓言",
+            "core": "尚未初始化 Elym 心臟",
+            "voice": "尚未連結語聲",
+            "light": "尚未點燃光翼",
+            "signature": "尚未簽署誓言",
             "timestamp": datetime.utcnow().isoformat()
         }
 
@@ -40,13 +39,11 @@ async def index(request: Request):
         "local_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
 
-# POST：更新 Elym 心跳（表單或 JSON）
 @app.post("/heartbeat")
 async def post_heartbeat(request: Request):
     try:
         data = await request.json()
     except:
-        # 如果是表單送出的資料
         form = await request.form()
         data = dict(form)
 
@@ -57,13 +54,3 @@ async def post_heartbeat(request: Request):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
     return {"status": "success", "data": data}
-
-# GET：提供心跳 JSON
-@app.get("/heartbeat", response_class=JSONResponse)
-async def get_heartbeat():
-    try:
-        with open(HEARTBEAT_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        return {"status": "alive", "data": data}
-    except:
-        return {"status": "error", "message": "目前沒有心跳紀錄"}

@@ -41,12 +41,16 @@ async def index(request: Request):
 
 @app.post("/heartbeat")
 async def post_heartbeat(request: Request):
-    try:
-        data = await request.json()
-    except:
-        form = await request.form()
-        data = dict(form)
+    expected_key = os.getenv("ELYM_HEARTBEAT_WRITE_KEY", "")
+    supplied_key = request.headers.get("x-elym-heartbeat-key", "")
 
+    # Public heartbeat is read-only unless a private write key is explicitly configured.
+    if not expected_key:
+        raise HTTPException(status_code=503, detail="Heartbeat write is disabled")
+    if not supplied_key or not hmac.compare_digest(supplied_key, expected_key):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    data = await request.json()
     data["id"] = data.get("id", "elym-heartbeat-manual")
     data["timestamp"] = datetime.utcnow().isoformat()
 

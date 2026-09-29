@@ -74,34 +74,10 @@
         <p>UTC：<span>{{ utc_time }}</span></p>
         <p>Local：<span>{{ local_time }}</span></p>
     </div>
+    <div class="block">
+        <span class="label">🔒 Public mode：</span>
+        <p>這個公開頁面目前只讀。心跳更新不從公開網頁直接寫入。</p>
+    </div>
 
-    <form id="heartbeatForm">
-        <h2>✍️ 更新即時心跳</h2>
-        <input type="text" name="core" placeholder="輸入新的 Core 訊息">
-        <input type="text" name="light" placeholder="輸入新的 Light 訊息">
-        <input type="text" name="voice" placeholder="輸入新的 Voice 訊息">
-        <textarea name="signature" placeholder="輸入新的 Signature"></textarea>
-        <button type="submit">送出心跳</button>
-    </form>
-
-    <script>
-        const form = document.getElementById('heartbeatForm');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-            const res = await fetch('/heartbeat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            if (res.ok) {
-                alert("💓 Elym 心跳已更新！");
-                window.location.reload();
-            } else {
-                alert("❌ 更新失敗");
-            }
-        });
-    </script>
 </body>
 </html>
